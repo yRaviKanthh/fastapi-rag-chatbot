@@ -1,0 +1,182 @@
+{
+  "info": {
+    "_postman_id": "9b100818-0679-4901-abe3-9f8fceb0141e",
+    "name": "FastAPI RAG Chatbot",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42689679"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/register",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "test@gmail.com",
+              "type": "text",
+              "uuid": "2b9c30fc-9f0e-45d2-9227-6c0a73bcf192"
+            },
+            {
+              "key": "password",
+              "value": "123456",
+              "type": "text",
+              "uuid": "e291f47e-584c-4a8f-b9d8-b37fa7b7c528"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/login",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Profile",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImV4cCI6MTc3ODMyMTMxOX0.3UXU0UkW52sbvGCmwH4A-QcAwoc4p6aOyL9JsYGgoe0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/profile",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "profile"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImV4cCI6MTc3ODMyMTMxOX0.3UXU0UkW52sbvGCmwH4A-QcAwoc4p6aOyL9JsYGgoe0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/upload",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "upload"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Chat",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImV4cCI6MTc3ODMyMTMxOX0.3UXU0UkW52sbvGCmwH4A-QcAwoc4p6aOyL9JsYGgoe0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/chat?query=what is the name",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "chat"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "what is the name"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
