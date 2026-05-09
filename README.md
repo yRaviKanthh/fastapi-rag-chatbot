@@ -1,0 +1,112 @@
+# ReNote AI - Backend Engineer Assignment
+
+## Overview
+
+This project is a FastAPI-based backend service that allows users to:
+
+- Register and login using JWT authentication
+- Upload TXT and PDF documents
+- Process uploaded documents using embeddings
+- Ask questions from uploaded documents using a RAG pipeline
+- Generate answers using a local LLM (Ollama + Llama3)
+
+---
+
+## Tech Stack
+
+- FastAPI
+- SQLite
+- SQLAlchemy
+- JWT Authentication
+- Sentence Transformers
+- FAISS Vector Store
+- Ollama (Llama3)
+- PyPDF2
+
+---
+
+## Features
+
+### Authentication
+- User Registration
+- User Login
+- JWT Token Authentication
+- Protected APIs
+
+### Document Upload
+- Upload TXT/PDF files
+- Text extraction
+- Embedding generation
+- Vector storage using FAISS
+
+### Chat / Q&A
+- Semantic search over uploaded documents
+- Context-based answer generation
+- Handles missing answers gracefully
+
+---
+
+## Project Structure
+
+```text
+app/
+├── models/
+├── routes/
+├── schemas/
+├── utils/
+├── main.py
+```
+
+
+Installation
+Clone Repository
+git clone <repository-url>
+cd renote-ai-backend
+Create Virtual Environment
+python -m venv venv
+Activate Environment
+Windows
+venv\Scripts\activate
+Install Dependencies
+pip install -r requirements.txt
+Run Ollama
+
+Install Ollama from:
+
+https://ollama.com/
+
+Run Llama3 model:
+
+ollama run llama3
+Run Application
+uvicorn app.main:app --reload
+
+Swagger Docs:
+
+http://127.0.0.1:8000/docs
+API Endpoints
+Method	Endpoint	Description
+POST	/register	Register user
+POST	/login	Login user
+GET	/profile	User profile
+POST	/upload	Upload document
+GET	/chat	Ask questions
+Design Decisions
+Used FAISS for fast vector similarity search
+Used SentenceTransformer for lightweight embeddings
+Used Ollama with Llama3 to avoid paid API usage
+SQLite used for simplicity and local execution
+FastAPI chosen for speed and clean API development
+Example Workflow
+Register user
+Login and get JWT token
+Authorize in Swagger
+Upload document
+Ask questions using /chat
+Future Improvements
+Multi-document support
+Better chunking strategy
+Persistent vector database
+Streaming responses
+Docker support
+Frontend integration
