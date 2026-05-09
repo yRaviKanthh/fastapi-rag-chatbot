@@ -7,8 +7,8 @@ This project is a FastAPI-based backend service that allows users to:
 - Register and login using JWT authentication
 - Upload TXT and PDF documents
 - Process uploaded documents using embeddings
-- Ask questions from uploaded documents using a RAG pipeline
-- Generate answers using a local LLM (Ollama + Llama3)
+- Ask questions from uploaded documents using a RAG (Retrieval-Augmented Generation) pipeline
+- Generate answers using a local LLM using Ollama and Llama3
 
 ---
 
@@ -28,18 +28,21 @@ This project is a FastAPI-based backend service that allows users to:
 ## Features
 
 ### Authentication
+
 - User Registration
 - User Login
 - JWT Token Authentication
 - Protected APIs
 
 ### Document Upload
+
 - Upload TXT/PDF files
 - Text extraction
 - Embedding generation
 - Vector storage using FAISS
 
 ### Chat / Q&A
+
 - Semantic search over uploaded documents
 - Context-based answer generation
 - Handles missing answers gracefully
@@ -57,32 +60,27 @@ app/
 ├── main.py
 ```
 
-
 Installation
 Clone Repository
-git clone <repository-url>
+git clone https://github.com/yRaviKanthh/fastapi-rag-chatbot.git
 cd renote-ai-backend
 Create Virtual Environment
 python -m venv venv
-Activate Environment
-Windows
+Activate Environment (Windows)
 venv\Scripts\activate
 Install Dependencies
 pip install -r requirements.txt
-Run Ollama
+Install Ollama
 
-Install Ollama from:
+Download and install Ollama from:
 
 https://ollama.com/
 
-Run Llama3 model:
-
+Run Llama3 Model
 ollama run llama3
 Run Application
 uvicorn app.main:app --reload
-
-Swagger Docs:
-
+Swagger Documentation
 http://127.0.0.1:8000/docs
 API Endpoints
 Method	Endpoint	Description
@@ -100,7 +98,7 @@ FastAPI chosen for speed and clean API development
 Example Workflow
 Register user
 Login and get JWT token
-Authorize in Swagger
+Authorize in Swagger/Postman
 Upload document
 Ask questions using /chat
 Future Improvements
@@ -110,3 +108,7 @@ Persistent vector database
 Streaming responses
 Docker support
 Frontend integration
+
+
+
+
