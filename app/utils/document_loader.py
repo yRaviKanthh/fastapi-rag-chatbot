@@ -5,7 +5,7 @@ def load_text(file_path: str):
 
     if file_path.endswith(".txt"):
 
-        with open(file_path, "r", encoding="utf-8") as file:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
             return file.read()
 
     elif file_path.endswith(".pdf"):
@@ -15,9 +15,9 @@ def load_text(file_path: str):
         text = ""
 
         for page in reader.pages:
-            text += page.extract_text()
+            text += (page.extract_text() or "") + "\n"
 
         return text
 
     else:
-        return "Unsupported file format"
+        raise ValueError("Unsupported file format")

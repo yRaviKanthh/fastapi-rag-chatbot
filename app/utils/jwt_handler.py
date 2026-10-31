@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 from jose import jwt, JWTError
@@ -13,7 +14,7 @@ from app.database import get_db
 from app.models.user import User
 
 
-SECRET_KEY = "mysecretkey"
+SECRET_KEY = os.getenv("SECRET_KEY", "mysecretkey")
 
 ALGORITHM = "HS256"
 
