@@ -1,11 +1,13 @@
+import os
 from collections import OrderedDict
 
-from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# EMBEDDINGS_BACKEND=sentence-transformers (default, runs locally)
+# or fastembed (small ONNX model, fits on a 512 MB free host).
+BACKEND = os.getenv("EMBEDDINGS_BACKEND", "sentence-transformers").lower()
 
 EMBEDDING_DIM = 384
 
@@ -13,11 +15,48 @@ EMBEDDING_DIM = 384
 MAX_USERS_IN_MEMORY = 200
 
 
+def _load_model():
+
+    if BACKEND == "fastembed":
+        from fastembed import TextEmbedding
+        return TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
+
+    from sentence_transformers import SentenceTransformer
+    return SentenceTransformer("all-MiniLM-L6-v2")
+
+
+model = _load_model()
+
+
+def embed(texts):
+
+    if BACKEND == "fastembed":
+        vectors = list(model.embed(texts))
+    else:
+        vectors = model.encode(texts)
+
+    return np.array(vectors).astype("float32")
+
+
 class UserStore:
 
     def __init__(self):
+        # filename -> (chunks, embeddings). Uploading the same file again replaces it.
+        self.documents = OrderedDict()
         self.chunks = []
         self.index = faiss.IndexFlatL2(EMBEDDING_DIM)
+
+    def set_document(self, name, chunks, embeddings):
+        self.documents[name] = (chunks, embeddings)
+        self._rebuild()
+
+    def _rebuild(self):
+        self.chunks = []
+        self.index = faiss.IndexFlatL2(EMBEDDING_DIM)
+
+        for chunks, embeddings in self.documents.values():
+            self.index.add(embeddings)
+            self.chunks.extend(chunks)
 
 
 # One store per user, so people only ever search their own documents.
@@ -57,22 +96,18 @@ def split_into_chunks(text: str, size: int = 60, overlap: int = 15):
     return chunks
 
 
-def create_embeddings(text: str, user_key: str):
+def create_embeddings(text: str, user_key: str, source: str = "document"):
 
     chunks = split_into_chunks(text)
 
     if not chunks:
         return 0
 
-    embeddings = model.encode(chunks)
-
-    embeddings = np.array(embeddings).astype("float32")
+    embeddings = embed(chunks)
 
     store = get_store(user_key, create=True)
 
-    store.index.add(embeddings)
-
-    store.chunks.extend(chunks)
+    store.set_document(source, chunks, embeddings)
 
     return len(chunks)
 
@@ -84,9 +119,7 @@ def search_query(query: str, user_key: str):
     if store is None or len(store.chunks) == 0:
         return []
 
-    query_embedding = model.encode([query])
-
-    query_embedding = np.array(query_embedding).astype("float32")
+    query_embedding = embed([query])
 
     k = min(5, len(store.chunks))
 

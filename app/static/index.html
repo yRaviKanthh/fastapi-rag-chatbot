@@ -77,6 +77,9 @@
     .msg { margin-top: 14px; min-height: 1.4em; font-size: .92rem; }
     .msg.error { color: var(--danger); }
     .msg.info { color: var(--cyan); }
+    .or { margin: 16px 0 0; text-align: center; color: var(--muted); font-size: .85rem; }
+    .auth .btn.demo { margin-top: 12px; }
+    .note { margin-top: 10px; text-align: center; font-size: .85rem; color: var(--muted); }
 
     /* ---------- App ---------- */
     .app { height: 100dvh; display: grid; grid-template-columns: 310px 1fr; }
@@ -175,6 +178,9 @@
         <button class="btn" id="auth-submit" type="submit">Log in</button>
         <p class="msg" id="auth-msg" role="status" aria-live="polite"></p>
       </form>
+      <p class="or">or</p>
+      <button class="btn btn-ghost demo" id="demo" type="button">Try the demo</button>
+      <p class="note">No sign-up. A sample document is already loaded.</p>
     </section>
   </main>
 
@@ -264,7 +270,7 @@
     var signedIn = !!token;
     $("#auth").hidden = signedIn;
     $("#app").hidden = !signedIn;
-    if (signedIn) { $("#who").textContent = email ? "Signed in as " + email : ""; $("#q").focus(); }
+    if (signedIn) { $("#who").textContent = email ? (/^guest-.*@demo\.local$/.test(email) ? "Demo visitor" : "Signed in as " + email) : ""; $("#q").focus(); }
     else { $("#email").focus(); }
   }
 
@@ -272,7 +278,7 @@
     token = null; email = null; save();
     $("#thread").querySelectorAll(".bubble").forEach(function (n) { n.remove(); });
     $("#empty").hidden = false;
-    $("#docs").innerHTML = ""; $("#docs-empty").hidden = false;
+    $("#docs").innerHTML = ""; $("#docs-empty").hidden = false; setChips(DEFAULT_CHIPS);
     show();
     setMsg(message || "", "info");
   }
@@ -316,10 +322,22 @@
 
   $("#logout").addEventListener("click", function () { signOut(""); });
 
+  $("#demo").addEventListener("click", async function () {
+    var btn = $("#demo"); btn.disabled = true; btn.textContent = "Starting the demo..."; setMsg("");
+    try {
+      var data = await api("/guest", { method: "POST" });
+      token = data.access_token; email = data.email; save(); show();
+      addDoc(data.demo_file).done(data.chunks_created);
+      setChips(DEMO_CHIPS);
+    } catch (err) { setMsg(err.message, "error"); }
+    finally { btn.disabled = false; btn.textContent = "Try the demo"; }
+  });
+
   /* ---------- upload ---------- */
   function addDoc(name) {
     $("#docs-empty").hidden = true;
-    var li = document.createElement("li"); li.className = "doc";
+    Array.from($("#docs").children).forEach(function (c) { if (c.dataset.name === name) c.remove(); });
+    var li = document.createElement("li"); li.className = "doc"; li.dataset.name = name;
     var b = document.createElement("b"); b.textContent = name;
     var s = document.createElement("span"); s.textContent = "Reading and indexing...";
     li.append(b, s); $("#docs").prepend(li);
@@ -384,9 +402,16 @@
   $("#chat-form").addEventListener("submit", function (e) {
     e.preventDefault(); var text = q.value; q.value = ""; grow(); ask(text);
   });
-  document.querySelectorAll(".chip").forEach(function (c) {
-    c.addEventListener("click", function () { ask(c.textContent); });
-  });
+  var DEFAULT_CHIPS = ["Summarize this document", "What are the key dates and numbers?", "List the main points"];
+  var DEMO_CHIPS = ["How many days of annual leave do I get?", "What is the notice period?", "Can I work from home?"];
+  function setChips(list) {
+    var box = $(".chips"); box.innerHTML = "";
+    list.forEach(function (t) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = t;
+      b.addEventListener("click", function () { ask(t); }); box.appendChild(b);
+    });
+  }
+  setChips(DEFAULT_CHIPS);
 
   show();
 })();

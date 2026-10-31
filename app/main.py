@@ -9,7 +9,7 @@ from app.database import Base, engine
 
 from app.models.user import User
 
-from app.routes import chat
+from app.routes import chat, demo
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,6 +22,8 @@ app.include_router(auth.router)
 app.include_router(document.router)
 
 app.include_router(chat.router)
+
+app.include_router(demo.router)
 
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"

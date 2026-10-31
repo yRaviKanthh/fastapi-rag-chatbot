@@ -76,7 +76,8 @@ async def upload_document(
 
     total_chunks = create_embeddings(
         extracted_text,
-        current_user.email
+        current_user.email,
+        filename
     )
 
     return {
